@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 import Jama.Matrix;
 import Jama.QRDecomposition;
@@ -32,8 +32,8 @@ import Jama.QRDecomposition;
 public class PolynomialRegression implements Comparable<PolynomialRegression> {
   private final String variableName; // name of the predictor variable
   private int degree; // degree of the polynomial regression
-  private Matrix beta; // the polynomial regression coefficients
-  private double sse; // sum of squares due to error
+  private final Matrix beta; // the polynomial regression coefficients
+  private final double sse; // sum of squares due to error
   private double sst; // total sum of squares
 
   /**
@@ -63,8 +63,8 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
     this.variableName = variableName;
 
     int n = x.length;
-    QRDecomposition qr = null;
-    Matrix matrixX = null;
+    QRDecomposition qr;
+    Matrix matrixX;
 
     // in case Vandermonde matrix does not have full rank, reduce degree until it
     // does
@@ -174,7 +174,7 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
       else s.append(String.format("%.10f %s^%d + ", beta(j), variableName, j));
       j--;
     }
-    s = s.append("  (R^2 = " + String.format("%.3f", R2()) + ")");
+    s = s.append("  (R^2 = ").append(String.format("%.3f", R2())).append(")");
 
     // replace "+ -2n" with "- 2n"
     return s.toString().replace("+ -", "- ");

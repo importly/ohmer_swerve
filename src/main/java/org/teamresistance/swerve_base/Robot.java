@@ -17,10 +17,20 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc2023.util.Alert;
-import frc2023.util.Alert.AlertType;
-import frc2023.util.BatteryTracker;
-import frc2023.util.VirtualSubsystem;
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.teamresistance.swerve_base.Constants.Mode;
+import org.teamresistance.swerve_base.Constants.RobotType;
+import org.teamresistance.swerve_base.util.Alert;
+import org.teamresistance.swerve_base.util.Alert.AlertType;
+import org.teamresistance.swerve_base.util.BatteryTracker;
+import org.teamresistance.swerve_base.util.VirtualSubsystem;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,15 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import org.teamresistance.swerve_base.Constants.Mode;
-import org.teamresistance.swerve_base.Constants.RobotType;
 
 public class Robot extends LoggedRobot {
   private static final String batteryNameFile = "/home/lvuser/battery-name.txt";
@@ -72,6 +73,21 @@ public class Robot extends LoggedRobot {
 
   public Robot() {
     super(Constants.loopPeriodSecs);
+  }
+
+  private static BiConsumer<Command, Boolean> getCommandBooleanBiConsumer() {
+    Map<String, Integer> commandCounts = new HashMap<>();
+    BiConsumer<Command, Boolean> logCommandFunction =
+      (Command command, Boolean active) -> {
+        String name = command.getName();
+        int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
+        commandCounts.put(name, count);
+        Logger
+          .recordOutput(
+            "CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()), active);
+        Logger.recordOutput("CommandsAll/" + name, count > 0);
+      };
+    return logCommandFunction;
   }
 
   @Override
@@ -156,17 +172,7 @@ public class Robot extends LoggedRobot {
     }
 
     // Log active commands
-    Map<String, Integer> commandCounts = new HashMap<>();
-    BiConsumer<Command, Boolean> logCommandFunction =
-        (Command command, Boolean active) -> {
-          String name = command.getName();
-          int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
-          commandCounts.put(name, count);
-          Logger.getInstance()
-              .recordOutput(
-                  "CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()), active);
-          Logger.getInstance().recordOutput("CommandsAll/" + name, count > 0);
-        };
+    BiConsumer<Command, Boolean> logCommandFunction = getCommandBooleanBiConsumer();
     CommandScheduler.getInstance()
         .onCommandInitialize(
             (Command command) -> {
@@ -208,7 +214,7 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
 
     // Check logging fault
-    logReceiverQueueAlert.set(Logger.getInstance().getReceiverQueueFault());
+    logReceiverQueueAlert.set(Logger.getReceiverQueueFault());
 
     // Robot container periodic methods
     robotContainer.updateDemoControls();
@@ -240,21 +246,18 @@ public class Robot extends LoggedRobot {
       clientNames.add(client.remote_id);
       clientAddresses.add(client.remote_ip);
     }
-    Logger.recordOutput("NTClients/Names", clientNames.toArray(new String[clientNames.size()]));
-    Logger.recordOutput(
-        "NTClients/Addresses", clientAddresses.toArray(new String[clientAddresses.size()]));
+    Logger.recordOutput("NTClients/Names", clientNames.toArray(new String[0]));
+    Logger.recordOutput("NTClients/Addresses", clientAddresses.toArray(new String[0]));
 
     // Print auto duration
     if (autoCommand != null) {
       if (!autoCommand.isScheduled() && !autoMessagePrinted) {
         if (DriverStation.isAutonomousEnabled()) {
-          System.out.println(
-              String.format(
-                  "*** Auto finished in %.2f secs ***", Timer.getFPGATimestamp() - autoStart));
+          System.out.printf(
+            "*** Auto finished in %.2f secs ***%n", Timer.getFPGATimestamp() - autoStart);
         } else {
-          System.out.println(
-              String.format(
-                  "*** Auto cancelled in %.2f secs ***", Timer.getFPGATimestamp() - autoStart));
+          System.out.printf(
+            "*** Auto cancelled in %.2f secs ***%n", Timer.getFPGATimestamp() - autoStart);
         }
         autoMessagePrinted = true;
       }

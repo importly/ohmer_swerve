@@ -17,13 +17,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc2023.util.LoggedTunableNumber;
-import frc2023.util.PoseEstimator;
-import frc2023.util.PoseEstimator.TimestampedVisionUpdate;
-import java.util.Arrays;
-import java.util.List;
 import org.littletonrobotics.junction.Logger;
 import org.teamresistance.swerve_base.Constants;
+import org.teamresistance.swerve_base.util.LoggedTunableNumber;
+import org.teamresistance.swerve_base.util.PoseEstimator;
+import org.teamresistance.swerve_base.util.PoseEstimator.TimestampedVisionUpdate;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Drive extends SubsystemBase {
   private static final double coastThresholdMetersPerSec =
@@ -57,10 +58,11 @@ public class Drive extends SubsystemBase {
       };
   private double characterizationVolts = 0.0;
   private boolean isBrakeMode = false;
-  private Timer lastMovementTimer = new Timer();
+  private final Timer lastMovementTimer = new Timer();
 
-  private PoseEstimator poseEstimator = new PoseEstimator(VecBuilder.fill(0.003, 0.003, 0.0002));
-  private double[] lastModulePositionsMeters = new double[] {0.0, 0.0, 0.0, 0.0};
+  private final PoseEstimator poseEstimator =
+    new PoseEstimator(VecBuilder.fill(0.003, 0.003, 0.0002));
+  private final double[] lastModulePositionsMeters = new double[]{0.0, 0.0, 0.0, 0.0};
   private Rotation2d lastGyroYaw = new Rotation2d();
   private Twist2d fieldVelocity = new Twist2d();
 
@@ -101,7 +103,7 @@ public class Drive extends SubsystemBase {
 
   public void periodic() {
     gyroIO.updateInputs(gyroInputs);
-    Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
+    Logger.processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();
     }
@@ -127,8 +129,8 @@ public class Drive extends SubsystemBase {
       }
 
       // Clear setpoint logs
-      Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
-      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
+      Logger.recordOutput("SwerveStates/Setpoints", new double[]{});
+      Logger.recordOutput("SwerveStates/SetpointsOptimized", new double[]{});
 
     } else if (isCharacterizing) {
       // Run in characterization mode
@@ -137,8 +139,8 @@ public class Drive extends SubsystemBase {
       }
 
       // Clear setpoint logs
-      Logger.getInstance().recordOutput("SwerveStates/Setpoints", new double[] {});
-      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", new double[] {});
+      Logger.recordOutput("SwerveStates/Setpoints", new double[]{});
+      Logger.recordOutput("SwerveStates/SetpointsOptimized", new double[]{});
 
     } else {
       // Calculate module setpoints
@@ -174,8 +176,8 @@ public class Drive extends SubsystemBase {
       }
 
       // Log setpoint states
-      Logger.getInstance().recordOutput("SwerveStates/Setpoints", setpointStates);
-      Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", optimizedStates);
+      Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
+      Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedStates);
     }
 
     // Log measured states
@@ -183,7 +185,7 @@ public class Drive extends SubsystemBase {
     for (int i = 0; i < 4; i++) {
       measuredStates[i] = modules[i].getState();
     }
-    Logger.getInstance().recordOutput("SwerveStates/Measured", measuredStates);
+    Logger.recordOutput("SwerveStates/Measured", measuredStates);
 
     // Update odometry
     SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
@@ -201,7 +203,7 @@ public class Drive extends SubsystemBase {
     }
     lastGyroYaw = gyroYaw;
     poseEstimator.addDriveData(Timer.getFPGATimestamp(), twist);
-    Logger.getInstance().recordOutput("Odometry/Robot", getPose());
+    Logger.recordOutput("Odometry/Robot", getPose());
 
     // Log 3D odometry pose
     Pose3d robotPose3d = new Pose3d(getPose());
@@ -223,7 +225,7 @@ public class Drive extends SubsystemBase {
                     gyroInputs.rollPositionRad,
                     0.0,
                     0.0));
-    Logger.getInstance().recordOutput("Odometry/Robot3d", robotPose3d);
+    Logger.recordOutput("Odometry/Robot3d", robotPose3d);
 
     // Update field velocity
     ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(measuredStates);

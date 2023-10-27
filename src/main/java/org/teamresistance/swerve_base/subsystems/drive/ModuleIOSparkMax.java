@@ -7,8 +7,6 @@
 
 package org.teamresistance.swerve_base.subsystems.drive;
 
-import static frc2023.util.CleanSparkMaxValue.cleanSparkMaxValue;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -19,9 +17,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
-import frc2023.util.SparkMaxBurnManager;
-import frc2023.util.SparkMaxPeriodicFrameConfig;
 import org.teamresistance.swerve_base.Constants;
+import org.teamresistance.swerve_base.util.SparkMaxBurnManager;
+import org.teamresistance.swerve_base.util.SparkMaxPeriodicFrameConfig;
+
+import static org.teamresistance.swerve_base.util.CleanSparkMaxValue.cleanSparkMaxValue;
 
 public class ModuleIOSparkMax implements ModuleIO {
   private final CANSparkMax driveSparkMax;
@@ -31,14 +31,10 @@ public class ModuleIOSparkMax implements ModuleIO {
   private final RelativeEncoder turnRelativeEncoder;
   private final AnalogInput turnAbsoluteEncoder;
 
-  private final double driveAfterEncoderReduction = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
-  private final double turnAfterEncoderReduction = 150.0 / 7.0;
-
-  private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
 
   public ModuleIOSparkMax(int index) {
-    System.out.println("[Init] Creating ModuleIOSparkMax " + Integer.toString(index));
+    System.out.println("[Init] Creating ModuleIOSparkMax " + index);
 
     switch (Constants.getRobot()) {
       case ROBOT_2023C:
@@ -121,6 +117,7 @@ public class ModuleIOSparkMax implements ModuleIO {
       SparkMaxPeriodicFrameConfig.configNotLeader(turnSparkMax);
       driveSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10);
 
+      boolean isTurnMotorInverted = true;
       turnSparkMax.setInverted(isTurnMotorInverted);
 
       driveSparkMax.setSmartCurrentLimit(40);
@@ -147,6 +144,7 @@ public class ModuleIOSparkMax implements ModuleIO {
   }
 
   public void updateInputs(ModuleIOInputs inputs) {
+    double driveAfterEncoderReduction = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     inputs.drivePositionRad =
         cleanSparkMaxValue(
             inputs.drivePositionRad,
@@ -169,6 +167,7 @@ public class ModuleIOSparkMax implements ModuleIO {
                         * Math.PI)
                 .minus(absoluteEncoderOffset)
                 .getRadians());
+    double turnAfterEncoderReduction = 150.0 / 7.0;
     inputs.turnPositionRad =
         cleanSparkMaxValue(
             inputs.turnPositionRad,

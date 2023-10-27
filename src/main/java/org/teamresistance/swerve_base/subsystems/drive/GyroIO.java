@@ -10,8 +10,11 @@ package org.teamresistance.swerve_base.subsystems.drive;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface GyroIO {
+  default void updateInputs(GyroIOInputs inputs) {
+  }
+
   @AutoLog
-  public static class GyroIOInputs {
+  class GyroIOInputs {
     public boolean connected = false;
     public double rollPositionRad = 0.0;
     public double pitchPositionRad = 0.0;
@@ -20,6 +23,4 @@ public interface GyroIO {
     public double pitchVelocityRadPerSec = 0.0;
     public double yawVelocityRadPerSec = 0.0;
   }
-
-  public default void updateInputs(GyroIOInputs inputs) {}
 }

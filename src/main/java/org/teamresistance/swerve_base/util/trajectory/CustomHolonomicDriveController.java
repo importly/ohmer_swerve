@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util.trajectory;
+package org.teamresistance.swerve_base.util.trajectory;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -96,13 +96,13 @@ public class CustomHolonomicDriveController {
     // Calculate feedforward velocities (field-relative).
     double xFF = linearVelocityRefMeters * poseRef.getRotation().getCos();
     double yFF = linearVelocityRefMeters * poseRef.getRotation().getSin();
-    double thetaFF = angleVelocityRefRadians;
 
     m_poseError = poseRef.relativeTo(currentPose);
     m_rotationError = angleRef.minus(currentPose.getRotation());
 
     if (!m_enabled) {
-      return ChassisSpeeds.fromFieldRelativeSpeeds(xFF, yFF, thetaFF, currentPose.getRotation());
+      return ChassisSpeeds.fromFieldRelativeSpeeds(
+        xFF, yFF, angleVelocityRefRadians, currentPose.getRotation());
     }
 
     // Calculate feedback velocities (based on position error).
@@ -113,7 +113,10 @@ public class CustomHolonomicDriveController {
 
     // Return next output.
     return ChassisSpeeds.fromFieldRelativeSpeeds(
-        xFF + xFeedback, yFF + yFeedback, thetaFF + thetaFeedback, currentPose.getRotation());
+      xFF + xFeedback,
+      yFF + yFeedback,
+      angleVelocityRefRadians + thetaFeedback,
+      currentPose.getRotation());
   }
 
   /**

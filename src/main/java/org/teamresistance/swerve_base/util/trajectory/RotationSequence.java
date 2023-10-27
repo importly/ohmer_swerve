@@ -5,9 +5,10 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util.trajectory;
+package org.teamresistance.swerve_base.util.trajectory;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -78,8 +79,8 @@ public class RotationSequence {
 
   /** Represents a state in a rotation sequence with a position and velocity. */
   public static class State {
-    public Rotation2d position;
-    public double velocityRadiansPerSec;
+    public final Rotation2d position;
+    public final double velocityRadiansPerSec;
 
     public State() {
       position = new Rotation2d();

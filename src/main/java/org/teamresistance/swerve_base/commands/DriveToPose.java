@@ -16,12 +16,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc2023.util.GeomUtil;
-import frc2023.util.LoggedTunableNumber;
-import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import org.teamresistance.swerve_base.Constants;
 import org.teamresistance.swerve_base.subsystems.drive.Drive;
+import org.teamresistance.swerve_base.util.GeomUtil;
+import org.teamresistance.swerve_base.util.LoggedTunableNumber;
+
+import java.util.function.Supplier;
 
 public class DriveToPose extends Command {
   private static final LoggedTunableNumber driveKp = new LoggedTunableNumber("DriveToPose/DriveKp");
@@ -224,8 +225,7 @@ public class DriveToPose extends Command {
     // Log data
     Logger.recordOutput("DriveToPose/DistanceMeasured", currentDistance);
     Logger.recordOutput("DriveToPose/DistanceSetpoint", driveController.getSetpoint().position);
-    Logger.getInstance()
-        .recordOutput("DriveToPose/ThetaMeasured", currentPose.getRotation().getRadians());
+    Logger.recordOutput("DriveToPose/ThetaMeasured", currentPose.getRotation().getRadians());
     Logger.recordOutput("DriveToPose/ThetaSetpoint", thetaController.getSetpoint().position);
     Logger.recordOutput(
         "Odometry/DriveToPoseSetpoint",

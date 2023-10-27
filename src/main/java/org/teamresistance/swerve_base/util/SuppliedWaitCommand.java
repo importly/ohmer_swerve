@@ -5,11 +5,12 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+
 import java.util.function.Supplier;
 
 /**
@@ -19,7 +20,7 @@ import java.util.function.Supplier;
  * <p>This class is provided by the NewCommands VendorDep
  */
 public class SuppliedWaitCommand extends Command {
-  protected Timer m_timer = new Timer();
+  protected final Timer m_timer = new Timer();
   private final Supplier<Double> m_duration;
 
   /**

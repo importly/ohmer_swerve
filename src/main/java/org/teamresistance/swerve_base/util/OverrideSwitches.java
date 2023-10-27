@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -29,8 +29,7 @@ public class OverrideSwitches {
   /** Gets the state of a driver-side switch (0-2 from left to right). */
   public boolean getDriverSwitch(int index) {
     if (index < 0 || index > 2) {
-      throw new RuntimeException(
-          "Invalid driver override index " + Integer.toString(index) + ". Must be 0-2.");
+      throw new RuntimeException("Invalid driver override index " + index + ". Must be 0-2.");
     }
     return joystick.getRawButton(index + 1);
   }
@@ -38,8 +37,7 @@ public class OverrideSwitches {
   /** Gets the state of an operator-side switch (0-4 from left to right). */
   public boolean getOperatorSwitch(int index) {
     if (index < 0 || index > 4) {
-      throw new RuntimeException(
-          "Invalid operator override index " + Integer.toString(index) + ". Must be 0-4.");
+      throw new RuntimeException("Invalid operator override index " + index + ". Must be 0-4.");
     }
     return joystick.getRawButton(index + 8);
   }
@@ -76,7 +74,7 @@ public class OverrideSwitches {
   }
 
   /** The state of the multi-directional switch. */
-  public static enum MultiDirectionSwitchState {
+  public enum MultiDirectionSwitchState {
     LEFT,
     NEUTRAL,
     RIGHT

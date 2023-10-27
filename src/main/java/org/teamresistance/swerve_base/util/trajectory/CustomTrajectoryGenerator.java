@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util.trajectory;
+package org.teamresistance.swerve_base.util.trajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class CustomTrajectoryGenerator {
 
     // Generate drive waypoints
     List<Translation2d> driveTranslations =
-        waypoints.stream().map(waypoint -> waypoint.getTranslation()).collect(Collectors.toList());
+      waypoints.stream().map(waypoint -> waypoint.getTranslation()).toList();
     List<Optional<Rotation2d>> driveRotations =
         waypoints.stream()
             .map(waypoint -> waypoint.getDriveRotation())

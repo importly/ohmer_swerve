@@ -14,9 +14,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import frc2023.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 import org.teamresistance.swerve_base.Constants;
+import org.teamresistance.swerve_base.util.LoggedTunableNumber;
 
 public class Module {
   private final ModuleIO io;
@@ -77,7 +77,7 @@ public class Module {
   }
 
   public Module(ModuleIO io, int index) {
-    System.out.println("[Init] Creating Module " + Integer.toString(index));
+    System.out.println("[Init] Creating Module " + index);
     this.io = io;
     this.index = index;
 
@@ -87,7 +87,7 @@ public class Module {
   /** Updates inputs and checks tunable numbers. */
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Drive/Module" + Integer.toString(index), inputs);
+    Logger.processInputs("Drive/Module" + index, inputs);
 
     // Update controllers if tunable numbers have changed
     if (driveKp.hasChanged(hashCode()) || driveKd.hasChanged(hashCode())) {

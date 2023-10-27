@@ -5,14 +5,15 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util.trajectory;
-
-import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+package org.teamresistance.swerve_base.util.trajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+
 import java.util.Optional;
+
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
 
 /** A trajectory waypoint, including a translation and optional drive/holonomic rotations. */
 public class Waypoint {

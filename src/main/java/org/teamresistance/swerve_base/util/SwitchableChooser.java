@@ -5,15 +5,16 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringArrayPublisher;
 import edu.wpi.first.networktables.StringPublisher;
-import java.util.Arrays;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardInput;
 import org.littletonrobotics.junction.networktables.LoggedDashboardString;
+
+import java.util.Arrays;
 
 /** A string chooser for the dashboard where the options can be changed on-the-fly. */
 public class SwitchableChooser implements LoggedDashboardInput {
@@ -22,8 +23,6 @@ public class SwitchableChooser implements LoggedDashboardInput {
   private String[] options = new String[] {placeholder};
   private String active = placeholder;
 
-  private final StringPublisher namePublisher;
-  private final StringPublisher typePublisher;
   private final StringArrayPublisher optionsPublisher;
   private final StringPublisher defaultPublisher;
   private final StringPublisher activePublisher;
@@ -32,14 +31,14 @@ public class SwitchableChooser implements LoggedDashboardInput {
 
   public SwitchableChooser(String name) {
     var table = NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable(name);
-    namePublisher = table.getStringTopic(".name").publish();
-    typePublisher = table.getStringTopic(".type").publish();
+    StringPublisher namePublisher = table.getStringTopic(".name").publish();
+    StringPublisher typePublisher = table.getStringTopic(".type").publish();
     optionsPublisher = table.getStringArrayTopic("options").publish();
     defaultPublisher = table.getStringTopic("default").publish();
     activePublisher = table.getStringTopic("active").publish();
     selectedPublisher = table.getStringTopic("selected").publish();
     selectedInput = new LoggedDashboardString(name + "/selected");
-    Logger.getInstance().registerDashboardInput(this);
+    Logger.registerDashboardInput(this);
 
     namePublisher.set(name);
     typePublisher.set("String Chooser");
@@ -61,7 +60,7 @@ public class SwitchableChooser implements LoggedDashboardInput {
 
   /** Returns the selected option. */
   public String get() {
-    return active == placeholder ? null : active;
+    return active.equals(placeholder) ? null : active;
   }
 
   public void periodic() {

@@ -5,12 +5,13 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 import edu.wpi.first.wpilibj.SerialPort;
+import org.teamresistance.swerve_base.Constants;
+
 import java.util.Arrays;
 import java.util.List;
-import org.teamresistance.swerve_base.Constants;
 
 public class BatteryTracker {
   private static final List<Constants.RobotType> supportedRobots =

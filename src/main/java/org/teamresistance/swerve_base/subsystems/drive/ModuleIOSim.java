@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.teamresistance.swerve_base.Constants;
 
 public class ModuleIOSim implements ModuleIO {
-  private FlywheelSim driveSim = new FlywheelSim(DCMotor.getNEO(1), 6.75, 0.025);
-  private FlywheelSim turnSim = new FlywheelSim(DCMotor.getNEO(1), 150.0 / 7.0, 0.004);
+  private final FlywheelSim driveSim = new FlywheelSim(DCMotor.getNEO(1), 6.75, 0.025);
+  private final FlywheelSim turnSim = new FlywheelSim(DCMotor.getNEO(1), 150.0 / 7.0, 0.004);
 
   private double turnRelativePositionRad = 0.0;
   private double turnAbsolutePositionRad = Math.random() * 2.0 * Math.PI;

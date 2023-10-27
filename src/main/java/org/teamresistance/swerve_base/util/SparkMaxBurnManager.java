@@ -5,16 +5,17 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import org.teamresistance.swerve_base.BuildConstants;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.teamresistance.swerve_base.BuildConstants;
 
 /** Determines whether to burn SparkMax configs to flash. */
 public class SparkMaxBurnManager {

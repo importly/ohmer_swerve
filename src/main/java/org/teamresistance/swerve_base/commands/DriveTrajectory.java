@@ -7,8 +7,6 @@
 
 package org.teamresistance.swerve_base.commands;
 
-import static org.teamresistance.swerve_base.Constants.RobotType.ROBOT_2023P;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -20,18 +18,19 @@ import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc2023.util.Alert;
-import frc2023.util.AllianceFlipUtil;
-import frc2023.util.LoggedTunableNumber;
-import frc2023.util.trajectory.CustomHolonomicDriveController;
-import frc2023.util.trajectory.CustomTrajectoryGenerator;
-import frc2023.util.trajectory.RotationSequence;
-import frc2023.util.trajectory.Waypoint;
-import java.util.List;
-import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import org.teamresistance.swerve_base.Constants;
 import org.teamresistance.swerve_base.subsystems.drive.Drive;
+import org.teamresistance.swerve_base.util.Alert;
+import org.teamresistance.swerve_base.util.AllianceFlipUtil;
+import org.teamresistance.swerve_base.util.LoggedTunableNumber;
+import org.teamresistance.swerve_base.util.trajectory.CustomHolonomicDriveController;
+import org.teamresistance.swerve_base.util.trajectory.CustomTrajectoryGenerator;
+import org.teamresistance.swerve_base.util.trajectory.RotationSequence;
+import org.teamresistance.swerve_base.util.trajectory.Waypoint;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 public class DriveTrajectory extends Command {
   private static final Alert generatorAlert =
@@ -156,17 +155,18 @@ public class DriveTrajectory extends Command {
   public void initialize() {
     // Generate trajectory if supplied
     if (waypointsSupplier != null || constraintsSupplier != null) {
+      assert waypointsSupplier != null;
+      assert waypointsSupplier != null;
       generate(
           waypointsSupplier.get(), constraintsSupplier.get(), startVelocitySupplier.get(), false);
     }
 
     // Log trajectory
-    Logger.getInstance()
-        .recordOutput(
-            "Odometry/Trajectory",
-            customGenerator.getDriveTrajectory().getStates().stream()
-                .map(state -> AllianceFlipUtil.apply(state.poseMeters))
-                .toArray(Pose2d[]::new));
+    Logger.recordOutput(
+      "Odometry/Trajectory",
+      customGenerator.getDriveTrajectory().getStates().stream()
+        .map(state -> AllianceFlipUtil.apply(state.poseMeters))
+        .toArray(Pose2d[]::new));
 
     // Reset all controllers
     timer.reset();

@@ -16,21 +16,19 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc2023.util.Alert;
-import frc2023.util.AllianceFlipUtil;
-import frc2023.util.OverrideSwitches;
-import frc2023.util.SparkMaxBurnManager;
-import java.util.function.Function;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardBoolean;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 import org.teamresistance.swerve_base.commands.DriveWithJoysticks;
 import org.teamresistance.swerve_base.subsystems.drive.*;
+import org.teamresistance.swerve_base.util.Alert;
+import org.teamresistance.swerve_base.util.AllianceFlipUtil;
+import org.teamresistance.swerve_base.util.OverrideSwitches;
+import org.teamresistance.swerve_base.util.SparkMaxBurnManager;
+
+import java.util.function.Function;
 
 public class RobotContainer {
-
-  // Subsystems
-  private Drive drive;
 
   // OI objects
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -54,10 +52,11 @@ public class RobotContainer {
       new LoggedDashboardNumber("Endgame Alert #2", 15.0);
   private final LoggedDashboardBoolean demoControls =
       new LoggedDashboardBoolean("Demo Controls", false);
-  private boolean lastWasDemoControls = false;
-
   // Auto selector
   private final AutoSelector autoSelector = new AutoSelector("Auto");
+  // Subsystems
+  private Drive drive;
+  private boolean lastWasDemoControls = false;
 
   public RobotContainer() {
     // Check if flash should be burned
@@ -69,7 +68,7 @@ public class RobotContainer {
         case ROBOT_2023C, ROBOT_2023P:
           drive =
               new Drive(
-                  new GyroIOPigeon2(),
+                new GyroIONavX(),
                   new ModuleIOSparkMax(0),
                   new ModuleIOSparkMax(1),
                   new ModuleIOSparkMax(2),
@@ -208,15 +207,14 @@ public class RobotContainer {
                 () -> -driver.getLeftX(),
                 () -> -driver.getRightX(),
                 () -> sniper,
-                () -> robotRelative.getAsBoolean());
+              robotRelative::getAsBoolean);
 
     // *** DRIVER CONTROLS ***
 
     // Drive controls
     final boolean[] demoManualArmMode = {false};
     Command driveWithJoysticksDefault =
-        Commands.either(
-                Commands.none(), driveWithJoysticksFactory.apply(false), () -> demoManualArmMode[0])
+      Commands.either(Commands.none(), driveWithJoysticksFactory.apply(false), () -> false)
             .withName("DriveWithJoysticks");
     Command oldDefaultCommand = CommandScheduler.getInstance().getDefaultCommand(drive);
     if (oldDefaultCommand != null) {
@@ -267,8 +265,8 @@ public class RobotContainer {
           .y()
           .whileTrue(
               Commands.startEnd(
-                      () -> Logger.getInstance().recordOutput("LogMarker", true),
-                      () -> Logger.getInstance().recordOutput("LogMarker", false))
+                  () -> Logger.recordOutput("LogMarker", true),
+                  () -> Logger.recordOutput("LogMarker", false))
                   .ignoringDisable(true));
     }
   }

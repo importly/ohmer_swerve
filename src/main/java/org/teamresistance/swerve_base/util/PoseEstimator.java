@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
+
 import java.util.*;
 
 public class PoseEstimator {
@@ -115,7 +116,7 @@ public class PoseEstimator {
    * Represents a sequential update to a pose estimate, with a twist (drive movement) and list of
    * vision updates.
    */
-  private static record PoseUpdate(Twist2d twist, ArrayList<VisionUpdate> visionUpdates) {
+  private record PoseUpdate(Twist2d twist, ArrayList<VisionUpdate> visionUpdates) {
     public Pose2d apply(Pose2d lastPose, Matrix<N3, N1> q) {
       // Apply drive twist
       var pose = lastPose.exp(twist);
@@ -156,7 +157,7 @@ public class PoseEstimator {
   }
 
   /** Represents a single vision pose with associated standard deviations. */
-  public static record VisionUpdate(Pose2d pose, Matrix<N3, N1> stdDevs) {
+  public record VisionUpdate(Pose2d pose, Matrix<N3, N1> stdDevs) {
     public static final Comparator<VisionUpdate> compareDescStdDev =
         (VisionUpdate a, VisionUpdate b) -> {
           return -Double.compare(
@@ -166,6 +167,6 @@ public class PoseEstimator {
   }
 
   /** Represents a single vision pose with a timestamp and associated standard deviations. */
-  public static record TimestampedVisionUpdate(
-      double timestamp, Pose2d pose, Matrix<N3, N1> stdDevs) {}
+  public record TimestampedVisionUpdate(double timestamp, Pose2d pose, Matrix<N3, N1> stdDevs) {
+  }
 }

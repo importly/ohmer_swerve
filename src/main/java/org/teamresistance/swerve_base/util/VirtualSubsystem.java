@@ -5,14 +5,14 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /** Represents a subsystem unit that requires a periodic callback but not a hardware mutex. */
 public abstract class VirtualSubsystem {
-  private static List<VirtualSubsystem> subsystems = new ArrayList<>();
+  private static final List<VirtualSubsystem> subsystems = new ArrayList<>();
 
   public VirtualSubsystem() {
     subsystems.add(this);

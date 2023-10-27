@@ -5,19 +5,20 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.*;
 import java.util.function.Predicate;
 
 /** Class for managing persistent alerts to be sent over NetworkTables. */
 public class Alert {
-  private static Map<String, SendableAlerts> groups = new HashMap<String, SendableAlerts>();
+  private static final Map<String, SendableAlerts> groups = new HashMap<String, SendableAlerts>();
 
   private final AlertType type;
   private boolean active = false;
@@ -61,17 +62,7 @@ public class Alert {
   public void set(boolean active) {
     if (active && !this.active) {
       activeStartTime = Timer.getFPGATimestamp();
-      switch (type) {
-        case ERROR:
-          DriverStation.reportError(text, false);
-          break;
-        case WARNING:
-          DriverStation.reportWarning(text, false);
-          break;
-        case INFO:
-          System.out.println(text);
-          break;
-      }
+      SetupReports(text);
     }
     this.active = active;
   }
@@ -79,19 +70,23 @@ public class Alert {
   /** Updates current alert text. */
   public void setText(String text) {
     if (active && !text.equals(this.text)) {
-      switch (type) {
-        case ERROR:
-          DriverStation.reportError(text, false);
-          break;
-        case WARNING:
-          DriverStation.reportWarning(text, false);
-          break;
-        case INFO:
-          System.out.println(text);
-          break;
-      }
+      SetupReports(text);
     }
     this.text = text;
+  }
+
+  private void SetupReports(String text) {
+    switch (type) {
+      case ERROR:
+        DriverStation.reportError(text, false);
+        break;
+      case WARNING:
+        DriverStation.reportWarning(text, false);
+        break;
+      case INFO:
+        System.out.println(text);
+        break;
+    }
   }
 
   private static class SendableAlerts implements Sendable {
@@ -118,7 +113,7 @@ public class Alert {
   }
 
   /** Represents an alert's level of urgency. */
-  public static enum AlertType {
+  public enum AlertType {
     /**
      * High priority alert - displayed first on the dashboard with a red "X" symbol. Use this type
      * for problems which will seriously affect the robot's functionality and thus require immediate

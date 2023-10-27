@@ -12,11 +12,12 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc2023.util.SwitchableChooser;
-import frc2023.util.VirtualSubsystem;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.teamresistance.swerve_base.util.SwitchableChooser;
+import org.teamresistance.swerve_base.util.VirtualSubsystem;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class AutoSelector extends VirtualSubsystem {
   private static final int maxQuestions = 4;
@@ -42,12 +43,11 @@ public class AutoSelector extends VirtualSubsystem {
     for (int i = 0; i < maxQuestions; i++) {
       var publisher =
           NetworkTableInstance.getDefault()
-              .getStringTopic("/SmartDashboard/" + key + "/Question #" + Integer.toString(i + 1))
+            .getStringTopic("/SmartDashboard/" + key + "/Question #" + (i + 1))
               .publish();
       publisher.set("NA");
       questionPublishers.add(publisher);
-      questionChoosers.add(
-          new SwitchableChooser(key + "/Question #" + Integer.toString(i + 1) + " Chooser"));
+      questionChoosers.add(new SwitchableChooser(key + "/Question #" + (i + 1) + " Chooser"));
     }
   }
 
@@ -55,10 +55,7 @@ public class AutoSelector extends VirtualSubsystem {
   public void addRoutine(String name, List<AutoQuestion> questions, Command command) {
     if (questions.size() > maxQuestions) {
       throw new RuntimeException(
-          "Auto routine contained more than "
-              + Integer.toString(maxQuestions)
-              + " questions: "
-              + name);
+        "Auto routine contained more than " + maxQuestions + " questions: " + name);
     }
     routineChooser.addOption(name, new AutoRoutine(name, questions, command));
   }
@@ -92,9 +89,7 @@ public class AutoSelector extends VirtualSubsystem {
           questionChoosers
               .get(i)
               .setOptions(
-                  questions.get(i).responses().stream()
-                      .map((AutoQuestionResponse response) -> response.toString())
-                      .toArray(String[]::new));
+                questions.get(i).responses().stream().map(Enum::toString).toArray(String[]::new));
         } else {
           questionPublishers.get(i).set("");
           questionChoosers.get(i).setOptions(new String[] {});
@@ -114,15 +109,8 @@ public class AutoSelector extends VirtualSubsystem {
     }
   }
 
-  /** A customizable auto routine associated with a single command. */
-  private static final record AutoRoutine(
-      String name, List<AutoQuestion> questions, Command command) {}
-
-  /** A question to ask for customizing an auto routine. */
-  public static record AutoQuestion(String question, List<AutoQuestionResponse> responses) {}
-
   /** Responses to auto routine questions. */
-  public static enum AutoQuestionResponse {
+  public enum AutoQuestionResponse {
     YES,
     NO,
     HYBRID,
@@ -134,5 +122,17 @@ public class AutoSelector extends VirtualSubsystem {
     RETURN,
     BALANCE,
     BALANCE_THROW
+  }
+
+  /**
+   * A customizable auto routine associated with a single command.
+   */
+  private record AutoRoutine(String name, List<AutoQuestion> questions, Command command) {
+  }
+
+  /**
+   * A question to ask for customizing an auto routine.
+   */
+  public record AutoQuestion(String question, List<AutoQuestionResponse> responses) {
   }
 }

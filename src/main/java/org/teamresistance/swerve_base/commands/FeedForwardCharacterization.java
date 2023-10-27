@@ -10,7 +10,8 @@ package org.teamresistance.swerve_base.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc2023.util.PolynomialRegression;
+import org.teamresistance.swerve_base.util.PolynomialRegression;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -139,7 +140,7 @@ public class FeedForwardCharacterization extends Command {
     }
 
     public void print() {
-      if (velocityData.size() == 0 || voltageData.size() == 0) {
+      if (velocityData.isEmpty() || voltageData.isEmpty()) {
         return;
       }
 
@@ -152,8 +153,8 @@ public class FeedForwardCharacterization extends Command {
       System.out.println("FF Characterization Results (" + name + "):");
       System.out.println("\tCount=" + velocityData.size());
       System.out.printf("\tR2=%.5f%n", regression.R2());
-      System.out.println(String.format("\tkS=%.5f", regression.beta(0)));
-      System.out.println(String.format("\tkV=%.5f", regression.beta(1)));
+      System.out.printf("\tkS=%.5f%n", regression.beta(0));
+      System.out.printf("\tkV=%.5f%n", regression.beta(1));
     }
   }
 }

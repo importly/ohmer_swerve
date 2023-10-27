@@ -5,12 +5,13 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
+
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
+import org.teamresistance.swerve_base.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
-import org.teamresistance.swerve_base.Constants;
 
 /**
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or
@@ -23,7 +24,7 @@ public class LoggedTunableNumber {
   private boolean hasDefault = false;
   private double defaultValue;
   private LoggedDashboardNumber dashboardNumber;
-  private Map<Integer, Double> lastHasChangedValues = new HashMap<>();
+  private final Map<Integer, Double> lastHasChangedValues = new HashMap<>();
 
   /**
    * Create a new LoggedTunableNumber

@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc2023.util;
+package org.teamresistance.swerve_base.util;
 
 public class CleanSparkMaxValue {
   public static double cleanSparkMaxValue(double lastValue, double value) {
